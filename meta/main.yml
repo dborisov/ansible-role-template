@@ -1,0 +1,17 @@
+---
+galaxy_info:
+  author: Denis Borisov
+  namespace: dborisov
+  role_name: %%role_name%%
+  description: Ansible role for installing and configuring Apache Zookeeper
+  license: MIT
+  min_ansible_version: "2.13"
+  platforms:
+    - name: EL
+      versions:
+        - "8"
+        - "9"
+  galaxy_tags:
+    - %%role_name%%
+
+dependencies: []

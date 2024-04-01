@@ -1,0 +1,53 @@
+---
+name: Run Molecule tests
+on: push
+
+jobs:
+  molecule:
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.9']
+        %%role_name%%-version: ['X.X.X', ]
+        config:
+          - namespace: "rockylinux"
+            image: "rockylinux"
+            tag: "8-ubi-init"
+          - namespace: "rockylinux"
+            image: "rockylinux"
+            tag: "9-ubi-init"
+          - namespace: "library"
+            image: "almalinux"
+            tag: "8"
+          - namespace: "library"
+            image: "almalinux"
+            tag: "9"
+          - namespace: "redhat"
+            image: "ubi8"
+            tag: "latest"
+          - namespace: "redhat"
+            image: "ubi9"
+            tag: "latest"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install tox
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install tox tox-gh-actions
+
+      - name: Run tox
+        run: tox
+        env:
+          ANSIBLE_FORCE_COLOR: '1'
+          NAMESPACE: ${{ matrix.config.namespace }}
+          IMAGE: ${{ matrix.config.image }}
+          TAG: ${{ matrix.config.tag }}
+          %%ROLE_NAME%%_VERSION: ${{ matrix.%%role_name%%-version }}
